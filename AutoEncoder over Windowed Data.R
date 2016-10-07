@@ -788,4 +788,21 @@ training_anom_7600 %>% arrange(desc(Reconstruction.MSE)) %>%
 library(clValid)
 library(factoextra)
 
+cluster_validation  <- training_data %>%
+  select(6:186) %>% as.data.frame() %>%
+  clValid(2:10, clMethods = "kmeans", 
+          validation = "internal", maxitems = nrow(training_data))
+
+summary(cluster_validation)
+optimalScores(cluster_validation)
+
+cluster_validation_test  <- test_data %>%
+  select(6:186) %>% as.data.frame() %>%
+  clValid(2:10, clMethods = "kmeans", 
+          validation = "internal", maxitems = nrow(test_data))
+
+summary(cluster_validation_test)
+optimalScores(cluster_validation_test)
+
+
 

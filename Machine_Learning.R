@@ -184,6 +184,294 @@ rec = TP / (TP + FN)
 rec 
 
 
+# The air dataset is already loaded into your workspace
+
+# Take a look at the structure of air
+str(air)
+
+# Inspect your colleague's code to build the model
+fit <- lm(dec ~ freq + angle + ch_length, data = air)
+
+# Use the model to predict for all values: pred
+
+pred = predict(fit, air)
+
+# Use air$dec and pred to calculate the RMSE 
+
+rmse = sqrt((1/nrow(air)) * sum( (air$dec - pred) ^ 2))
+
+# Print out rmse
+
+rmse
+
+# The air dataset is already loaded into your workspace
+
+# Previous model
+fit <- lm(dec ~ freq + angle + ch_length, data = air)
+pred <- predict(fit)
+rmse <- sqrt(sum( (air$dec - pred) ^ 2) / nrow(air))
+rmse
+
+# Your colleague's more complex model
+fit2 <- lm(dec ~ freq + angle + ch_length + velocity + thickness, data = air)
+
+# Use the model to predict for all values: pred2
+
+pred2 = predict(fit2, air)
+
+# Calculate 
+rmse2 = sqrt(sum( (air$dec - pred2) ^ 2) / nrow(air))
+
+
+# Print out 
+rmse2
+
+
+# The seeds dataset is already loaded into your workspace
+
+# Set random seed. Don't remove this line
+set.seed(1)
+
+# Explore the structure of the dataset
+str(seeds)
+
+# Group the seeds in three clusters
+km_seeds <- kmeans(seeds, 3)
+
+# Color the points in the plot based on the clusters
+plot(length ~ compactness, data = seeds, col = km_seeds$cluster)
+
+# Print out the ratio of the WSS to the BSS
+
+km_seeds
+
+km_seeds$tot.withinss 
+km_seeds$betweenss
+
+km_seeds$tot.withinss / km_seeds$betweenss
+
+
+
+# The titanic dataset is already loaded into your workspace
+
+# Set random seed. Don't remove this line.
+set.seed(1)
+
+# Shuffle the dataset, call the result shuffled
+n <- nrow(titanic)
+shuffled <- titanic[sample(n),]
+
+# Split the data in train and test
+
+train_indices <- 1:round(0.7 * n)
+train <- shuffled[train_indices, ]
+
+test_indices <- (round(0.7 * n) + 1):n
+test <- shuffled[test_indices, ]
+
+# Print the structure of train and test
+str(test)
+str(train)
+
+
+# The titanic dataset is already loaded into your workspace
+
+# Set random seed. Don't remove this line.
+set.seed(1)
+
+# Shuffle the dataset; build train and test
+n <- nrow(titanic)
+shuffled <- titanic[sample(n),]
+train <- shuffled[1:round(0.7 * n),]
+test <- shuffled[(round(0.7 * n) + 1):n,]
+
+# Fill in the model that has been learned.
+tree <- rpart(Survived ~ ., train, method = "class")
+
+# Predict the outcome on the test set with tree: pred
+
+pred = predict(tree, test, type = "class")
+
+# Calculate the confusion matrix: conf
+
+conf = table(test$Survived, pred)
+
+# Print this confusion matrix
+
+conf
+
+   pred
+      1   0
+  1  58  31
+  0  23 102
+
+accuracy of (58+102)/(58+31+23+102) = 74.76%
+
+
+# The shuffled dataset is already loaded into your workspace
+
+# Set random seed. Don't remove this line.
+set.seed(1)
+
+# Initialize the accs vector
+accs <- rep(0,6)
+
+for (i in 1:6) {
+  # These indices indicate the interval of the test set
+  indices <- (((i-1) * round((1/6)*nrow(shuffled))) + 1):((i*round((1/6) * nrow(shuffled))))
+  
+  # Exclude them from the train set
+  train <- shuffled[-indices,]
+  
+  # Include them in the test set
+  test <- shuffled[indices,]
+  
+  # A model is learned using each training set
+  tree <- rpart(Survived ~ ., train, method = "class")
+  
+  # Make a prediction on the test set using tree
+
+  pred = predict(tree, test, type = "class")
+  
+  # Assign the confusion matrix to conf
+
+  conf = table(test$Survived, pred)
+  
+  
+  # Assign the accuracy of this model to the ith index in accs
+  accs[i] <- sum(diag(conf))/sum(conf)
+}
+
+# Print out the mean of accs
+
+accs
+mean(accs)
+
+
+# The shuffled dataset is already loaded into your workspace
+library(caret)
+
+# Set random seed. Don't remove this line.
+set.seed(1)
+
+# Initialize the accs vector
+accs <- rep(0,6)
+
+folds <- createFolds(shuffled$Survived, 6)
+
+for (i in 1:6) {
+  # These indices indicate the interval of the test set
+  indices <- folds[[i]]
+  
+  # Exclude them from the train set
+  train <- shuffled[-indices,]
+  
+  # Include them in the test set
+  test <- shuffled[indices,]
+  
+  # A model is learned using each training set
+  tree <- rpart(Survived ~ ., train, method = "class")
+  
+  # Make a prediction on the test set using tree
+
+  pred = predict(tree, test, type = "class")
+  
+  # Assign the confusion matrix to conf
+
+  conf = table(test$Survived, pred)
+  
+  
+  # Assign the accuracy of this model to the ith index in accs
+  accs[i] <- sum(diag(conf))/sum(conf)
+}
+
+# Print out the mean of accs
+
+accs
+mean(accs)
+
+
+# The shuffled dataset is already loaded into your workspace
+
+# Set random seed. Don't remove this line.
+set.seed(1)
+
+# Initialize the accs vector
+accs <- rep(0,6)
+
+for (i in 1:6) {
+  # These indices indicate the interval of the test set
+  indices <- (((i-1) * round((1/6)*nrow(shuffled))) + 1):((i*round((1/6) * nrow(shuffled))))
+  
+  # Exclude them from the train set
+  train <- shuffled[-indices,]
+  
+  # Include them in the test set
+  test <- shuffled[indices,]
+  
+  # A model is learned using each training set
+  tree <- rpart(Survived ~ ., train, method = "class")
+  
+  # Make a prediction on the test set using tree
+
+  pred = predict(tree, test, type = "class")
+  
+  # Assign the confusion matrix to conf
+
+  conf = table(test$Survived, pred)
+  
+  
+  # Assign the accuracy of this model to the ith index in accs
+  accs[i] <- sum(diag(conf))/sum(conf)
+}
+
+# Print out the mean of accs
+
+accs
+mean(accs)
+
+
+
+BIAS
+wrong assumptions
+different predictions and truth
+
+
+VARIANCE
+error due to the sample of the training set
+it fits training set closely
+
+
+
+
+# The spam filter that has been 'learned' for you
+spam_classifier <- function(x){
+  prediction <- rep(NA, length(x)) # initialize prediction vector
+  prediction[x > 4] <- 1 
+  prediction[x >= 3 & x <= 4] <- 0
+  prediction[x >= 2.2 & x < 3] <- 1
+  prediction[x >= 1.4 & x < 2.2] <- 0
+  prediction[x > 1.25 & x < 1.4] <- 1
+  prediction[x <= 1.25] <- 0
+  return(factor(prediction, levels = c("1", "0"))) # prediction is either 0 or 1
+}
+
+# Apply spam_classifier to emails_full: pred_full
+
+pred_full = spam_classifier(emails_full$avg_capital_seq)
+
+# Build confusion matrix for emails_full: conf_full
+
+conf_full = table(emails_full$spam, pred_full)
+
+# Calculate the accuracy with conf_full: acc_full
+
+acc_full = sum(diag(conf_full)) / sum(conf_full)
+
+# Print 
+acc_full
+
+
 
 
 

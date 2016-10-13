@@ -309,3 +309,149 @@ model_2_rate 	<- with(data = model_2_output, mean(start_position != model_output
 null_rate
 model_1_rate
 model_2_rate
+
+
+
+
+library(NHANES)
+library(dplyr)
+
+names(NHANES) %>% head(20)
+
+library(rpart.plot)
+model = rpart(SmokeNow ~ Poverty + MaritalStatus + Gender + BMI + TotChol + AgeFirstMarij, data = NHANES)
+prp(model, type = 4, extra = 105, varlen = 0)
+
+
+model = rpart(SmokeNow ~ Poverty + MaritalStatus + Gender + BMI + TotChol + AgeFirstMarij, data = NHANES, cp = 0.002)
+prp(model, type = 4, extra = 105, varlen = 0)
+
+
+form = as.formula(net ~ age + sex)
+model_2 <- rpart(form, data = Runners, cp = 0.001)
+prp(model_2, type = 3)
+
+
+
+: 105 ounces is one kilogram.)
+
+105 > 1
+124 > ?
+
+124  /  105
+
+Birth_weight$baby_wt_kg = Birth_weight$baby_wt / 105 
+
+
+model_1 <- rpart(baby_wt ~ smoke + income,  data = Birth_weight)
+model_2 <- rpart(baby_wt ~ mother_age + mother_wt,  data = Birth_weight)
+model_3 <- rpart(baby_wt ~ smoke + income + mother_age + mother_wt,  data = Birth_weight)
+
+model_1 <- rpart(baby_wt_kg ~ smoke + income, 
+                 data = Birth_weight)
+model_2 <- rpart(baby_wt_kg ~ mother_age + mother_wt, 
+	                 data = Birth_weight)
+
+
+
+# Train the model price ~ fireplaces
+simple_model <- lm(price ~ fireplaces, data = Houses_for_sale)
+
+# Evaluate simple_model
+evaluate_model(simple_model)
+
+# Calculate the difference in model price
+naive_worth <- 238522.7 - 171823.9
+
+# Train another model including living_area
+sophisticated_model <-lm(price ~ fireplaces + living_area, data = Houses_for_sale)
+
+# Evaluate that model
+evaluate_model(sophisticated_model)
+
+# Find price difference for fixed living_area
+sophisticated_worth <- 242319.5 - 233357.1
+
+
+
+# Train model_1 and model_2
+model_1 <- lm(R ~ X, data = Crime)
+model_2 <- lm(R ~ W, data = Crime)
+
+# Evaluate each model...
+evaluate_model(model_1)
+evaluate_model(model_2)
+
+# ...and calculate the difference in output for each
+change_with_X <- 89.5 - 106.8
+change_with_W <- 103.7 - 68.3
+
+# Train model_3 using both X and W as explanatory variables
+model_3 <- lm(R ~ X + W, data = Crime)
+
+# Evaluate model_3
+evaluate_model(model_3)
+
+# Find the difference in output for each of X and W
+change_with_X_holding_W_constant <- 228.5 - 134.9
+change_with_W_holding_X_constant <- 134.9 - 31.0
+
+
+# Train the five models
+model_1 <- lm(earnings ~ sex, data = Trucking_jobs)
+model_2 <- lm(earnings ~ sex + age, data = Trucking_jobs)
+model_3 <- lm(earnings ~ sex + hiredyears, data = Trucking_jobs)
+model_4 <- lm(earnings ~ sex + title, data = Trucking_jobs)
+model_5 <- lm(earnings ~ sex + age + hiredyears + title, data = Trucking_jobs)
+
+# Evaluate each model...
+evaluate_model(model_1)
+evaluate_model(model_2, age = 25)
+evaluate_model(model_3, hiredyears = 1)
+evaluate_model(model_4, title = "PROGRAMMER")
+evaluate_model(model_5, age = 25, hiredyears = 1, title = "PROGRAMMER")
+
+# ...and calculate the gender difference in earnings 
+diff_1 <- 40236.35 - 35501.25
+diff_2 <- 32169.78 -  29815.45
+diff_3 <- 37333.41 -  33703.38 
+diff_4 <- 41616.92 - 41949.25
+diff_5 <- 37459.97 - 37475.25
+
+
+
+# Calculating the GPA
+gpa_mod_1 <- lm(gradepoint ~ sid, data = College_grades)
+
+# The GPA for two students
+evaluate_model(gpa_mod_1, sid = c("S32115", "S32262"))
+
+# Use effect_size()
+effect_size(gpa_mod_1, ~ sid)
+
+# Specify from and to levels to compare
+effect_size(gpa_mod_1, ~ sid, sid = "S32115", to = "S32262")
+
+# A better model?
+gpa_mod_2 <- lm(gradepoint ~ sid + dept + level, data = College_grades)
+
+# Find difference between the same two students as before
+effect_size(gpa_mod_2, ~ sid, sid = "S32115", to = "S32262")
+
+# Calculating the GPA
+gpa_mod_1 <- lm(gradepoint ~ sid, data = College_grades)
+
+# The GPA for two students
+evaluate_model(gpa_mod_1, sid = c("S32115", "S32262"))
+
+# Use effect_size()
+effect_size(gpa_mod_1, ~ sid)
+
+# Specify from and to levels to compare
+effect_size(gpa_mod_1, ~ sid, sid = "S32115", to = "S32262")
+
+# A better model?
+gpa_mod_2 <- lm(gradepoint ~ sid + dept + level, data = College_grades)
+
+# Find difference between the same two students as before
+effect_size(gpa_mod_2, ~ sid, sid = "S32115", to = "S32262")

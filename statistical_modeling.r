@@ -1,3 +1,5 @@
+https://github.com/dtkaplan/statisticalModeling
+
 t test
 
 are two groups diffferents???
@@ -455,3 +457,245 @@ gpa_mod_2 <- lm(gradepoint ~ sid + dept + level, data = College_grades)
 
 # Find difference between the same two students as before
 effect_size(gpa_mod_2, ~ sid, sid = "S32115", to = "S32262")
+
+
+
+# Build the model
+mod <- lm(Pulse ~ Height + BMI + Gender, data = NHANES)
+
+# Confirm by reconstructing the graphic provided
+fmodel(mod, ~ BMI) + ggplot2::ylab("Pulse")
+
+# Find effect size
+effect_size(mod, ~ BMI)
+
+# Replot the model
+fmodel(mod, ~ BMI) + ggplot2::ylab("Pulse")
+
+
+#Model output  for categorical response
+
+as classes
+as probabilies
+
+
+
+
+# Build the model without interaction
+
+model1 = lm(baby_wt ~ gestation + smoke, data = Birth_weight)
+
+# Build the model with interaction
+
+model2 = lm(baby_wt ~ gestation * smoke, data = Birth_weight)
+
+
+# Plot each model
+fmodel(model1) + ggplot2::ylab("baby_wt")
+fmodel(model2) + ggplot2::ylab("baby_wt")
+
+
+
+# Train model_1
+model_1 <- lm(Price ~ Age + Mileage, data = Used_Fords)
+
+# Train model_2
+model_2 <- lm(Price ~ Age * Mileage, data = Used_Fords)
+
+# Plot both models
+fmodel(model_1)
+fmodel(model_2)
+
+# Cross validate and compare prediction errors
+res <- cv_pred_error(model_1, model_2)
+t.test(mse ~ model, data = res)
+
+The t-test is a technique for comparing two sets of numbers. Here, the numbers are the cross validation prediction errors from the several trials. The two sets are model 1 and model 2. You can see from the last line of the t-test report that the MSE from model 2 is roughly half that of the MSE from model 1. The p-value is tiny, giving a certificate of 'statistical significance' for the difference in means.
+
+	Welch Two Sample t-test
+
+data:  mse by model
+t = 205.61, df = 5.3859, p-value = 1.065e-11
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 2421553 2481555
+sample estimates:
+mean in group model_1 mean in group model_2 
+              6093963               3642409
+
+
+# A parabolic model of vmax
+model_1 <- lm(vmax ~ rtemp + I(rtemp^2) + group,  data = Tadpoles)
+
+model_2 <- lm(vmax ~ rtemp *  I(rtemp^2) * group,  data = Tadpoles)
+
+# Graph it
+fmodel(model_2, ~ rtemp + group)
+fmodel(model_1, ~ rtemp + group)
+
+
+# Train a model of house prices
+price_model_1 <- lm(price ~ land_value + living_area + fireplaces + bathrooms + bedrooms, data = Houses_for_sale)
+
+# Effect size of living area
+effect_size(price_model_1, ~ living_area)
+
+# Effect size of bathrooms
+effect_size(price_model_1, ~ bathrooms, step=1)
+
+# Effect size of bedrooms
+
+
+effect_size(price_model_1, ~ bedrooms, step=1)
+
+
+# Let living_area change as it will
+price_model_2 <- lm(price ~ land_value + fireplaces + bathrooms + bedrooms, data = Houses_for_sale)
+
+# Effect size of bedroom in price_model_2
+
+effect_size(price_model_2, ~ bedrooms, step = 1)
+
+
+# Train a model of house prices
+price_model <- lm(price ~ land_value + living_area + fireplaces + 
+                    bathrooms + bedrooms, data = Houses_for_sale)
+
+# Evaluate the model in scenario 1
+evaluate_model(price_model, living_area = 2000, bedrooms = 2)
+
+# Evaluate the model in scenario 2
+evaluate_model(price_model, living_area = 2140, bedrooms = 3)
+
+# Find the difference in output
+price_diff <- 184050.4 - 181624.0
+
+# Evaluate the second scenario again, but add a half bath
+evaluate_model(price_model, living_area = 2165, bedrooms = 3, bathrooms = 1.5)
+
+# Calculate the price difference
+new_price_diff <- 199030.3 - 181624.0
+
+
+> evaluate_model(price_model, living_area = 2000, bedrooms = 2)
+   land_value living_area fireplaces bathrooms bedrooms model_output
+1           0        2000          0         1        2     181624.0
+2       50000        2000          0         1        2     228787.1
+3           0        2000          1         1        2     185499.2
+4       50000        2000          1         1        2     232662.4
+5           0        2000          0         2        2     207780.4
+6       50000        2000          0         2        2     254943.6
+7           0        2000          1         2        2     211655.7
+8       50000        2000          1         2        2     258818.8
+9           0        2000          0         3        2     233936.8
+10      50000        2000          0         3        2     281100.0
+11          0        2000          1         3        2     237812.1
+12      50000        2000          1         3        2     284975.3
+> 
+> # Evaluate the model in scenario 2
+> evaluate_model(price_model, living_area = 2140, bedrooms = 3)
+   land_value living_area fireplaces bathrooms bedrooms model_output
+1           0        2140          0         1        3     184050.4
+2       50000        2140          0         1        3     231213.5
+3           0        2140          1         1        3     187925.7
+4       50000        2140          1         1        3     235088.8
+5           0        2140          0         2        3     210206.8
+6       50000        2140          0         2        3     257370.0
+7           0        2140          1         2        3     214082.1
+8       50000        2140          1         2        3     261245.2
+9           0        2140          0         3        3     236363.2
+10      50000        2140          0         3        3     283526.4
+11          0        2140          1         3        3     240238.5
+12      50000        2140          1         3        3     287401.7
+> 
+> # Find the difference in output
+> price_diff <- 184050.4 - 181624.0
+> 
+> # Evaluate the second scenario again, but add a half bath
+> evaluate_model(price_model, living_area = 2165, bedrooms = 3, bathrooms = 1.5)
+  land_value living_area fireplaces bathrooms bedrooms model_output
+1          0        2165          0       1.5        3     199030.3
+2      50000        2165          0       1.5        3     246193.4
+3          0        2165          1       1.5        3     202905.5
+4      50000        2165          1       1.5        3     250068.7
+> 
+> # Calculate the price difference
+> new_price_diff <- 199030.3 - 181624.0
+
+
+
+# Fit model
+car_price_model <- lm(Price ~ Age + Mileage, data = Used_Fords)
+
+# Partial effect size
+effect_size(car_price_model, ~ Age)
+
+# To find total effect size
+evaluate_model(car_price_model, Age = 6, Mileage = 42000)
+evaluate_model(car_price_model, Age = 7, Mileage = 50000)
+
+# Price difference between scenarios (round to nearest dollar)
+price_difference <- 8400 - 9524
+
+# Effect for age without mileage in the model
+car_price_model_2 <- lm(Price ~ Age, data = Used_Fords)
+
+# Calculate partial effect size
+effect_size(car_price_model_2, ~ Age)
+
+
+
+
+
+# Train some models
+model_1 <- lm(gradepoint ~ sid, data = College_grades)
+model_2 <- lm(Cost ~ Age + Sex + Coverage, data = AARP)
+model_3 <- lm(vmax ~ group + (rtemp + I(rtemp^2)), data = Tadpoles)
+
+# Calculate model output on training data
+output_1 <- evaluate_model(model_1, data = College_grades)
+output_2 <- evaluate_model(model_2, data = AARP)
+output_3 <- evaluate_model(model_3, data = Tadpoles)
+
+# R-squared for the models
+with(output_1, var(model_output) / var(gradepoint))
+with(output_2, var(model_output) / var(Cost))
+with(output_3, var(model_output) / var(vmax))
+
+
+
+# The two models
+model_1 <- lm(hdd ~ year, data = HDD_Minneapolis)
+model_2 <- lm(hdd ~ month, data = HDD_Minneapolis)
+
+# Find the model output on the training data for each model
+output_1 <- evaluate_model(model_1, data = HDD_Minneapolis)
+output_2 <- evaluate_model(model_2, data = HDD_Minneapolis)
+
+# Find R-squared for each of the 2 models
+with(output_1, var(model_output) / var(hdd))
+with(output_2, var(model_output) / var(hdd))
+
+> with(output_1, var(model_output) / var(hdd))
+[1] 0.0001121255
+> with(output_2, var(model_output) / var(hdd))
+[1] 0.9547171
+
+There's a huge amount of variation in hdd from one month to another, much more than the changes from year to year. So R-squared for model_2 is much higher than for model_1
+
+
+
+# Train model_1 without bogus
+model_1 <- lm(wage ~ sector, data = Training)
+
+# Train model_2 with bogus
+model_2 <- lm(wage ~ sector + bogus, data = Training)
+
+# Calculate R-squared using the training data
+output_1 <- evaluate_model(model_1, data = Training)
+output_2 <- evaluate_model(model_2, data = Training)
+with(output_1, var(model_output) / var(wage))
+with(output_2, var(model_output) / var(wage))
+
+# Compare cross-validated MSE
+boxplot(mse ~ model, data = cv_pred_error(model_1, model_2))

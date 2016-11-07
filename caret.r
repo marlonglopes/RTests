@@ -237,7 +237,6 @@ set.seed(seed)
 bestmtry <- tuneRF(x, y, stepFactor=1.5, improve=1e-5, ntree=500)
 print(bestmtry)
 
-
 You can see that the most accurate value for mtry was 10 with an OOBError of 0.1442308.
 
 #Craft Your Own Parameter Search
